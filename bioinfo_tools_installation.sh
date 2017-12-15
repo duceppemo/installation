@@ -85,35 +85,35 @@ source "${HOME}"/.bashrc
 #install htslib/samtools/bcftools
 #install htslib
 cd "${HOME}"/prog
-wget https://github.com/samtools/htslib/releases/download/1.4/htslib-1.4.tar.bz2
-tar xvjf htslib-1.4.tar.bz2
-rm htslib-1.4.tar.bz2
-cd htslib-1.4
+wget https://github.com/samtools/htslib/releases/download/1.6/htslib-1.6.tar.bz2
+tar xvjf htslib-1.6.tar.bz2
+rm htslib-1.6.tar.bz2
+cd htslib-1.6
 ./configure
 make -j
 sudo make install
 
 #install samtools
 cd "${HOME}"/prog
-wget https://github.com/samtools/samtools/releases/download/1.4/samtools-1.4.tar.bz2
-tar xvjf samtools-1.4.tar.bz2
-rm samtools-1.4.tar.bz2
-cd samtools-1.4
+wget https://github.com/samtools/samtools/releases/download/1.6/samtools-1.6.tar.bz2
+tar xvjf samtools-1.6.tar.bz2
+rm samtools-1.6.tar.bz2
+cd samtools-1.6
 ./configure
 make -j
 sudo make install
 
 #install bcftools
 cd "${HOME}"/prog
-wget https://github.com/samtools/bcftools/releases/download/1.4/bcftools-1.4.tar.bz2
-tar xvjf bcftools-1.4.tar.bz2
-rm bcftools-1.4.tar.bz2
-cd bcftools-1.4
+wget https://github.com/samtools/bcftools/releases/download/1.6/bcftools-1.6.tar.bz2
+tar xvjf bcftools-1.6.tar.bz2
+rm bcftools-1.6.tar.bz2
+cd bcftools-1.6
 ./configure
 make -j
 sudo make install
 
-#install sambamba
+#install sambamba (not needed anymore since samtools is now parallel)
 cd "${HOME}"/prog
 wget https://github.com/lomereiter/sambamba/releases/download/v0.6.6/sambamba_v0.6.6_linux.tar.bz2
 tar xvjf sambamba_v0.6.6_linux.tar.bz2
@@ -126,9 +126,9 @@ source "${HOME}"/.bashrc
 
 #install bbmap
 cd "${HOME}"/prog
-wget https://downloads.sourceforge.net/project/bbmap/BBMap_37.10.tar.gz
-tar zxvf BBMap_37.10.tar.gz
-rm BBMap_37.10.tar.gz
+wget https://downloads.sourceforge.net/project/bbmap/BBMap_37.68.tar.gz
+tar zxvf BBMap_37.68.tar.gz
+rm BBMap_37.68.tar.gz
 echo -e "\n#BBMap\nexport PATH=\$HOME/prog/bbmap:\$PATH" | tee -a "${HOME}"/.bashrc
 source "${HOME}"/.bashrc
 
@@ -429,10 +429,10 @@ sudo apt-get install libreadline6-dev
 
 #install bowtie2
 cd "${HOME}"/prog
-wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.1/bowtie2-2.3.1-linux-x86_64.zip
-unzip bowtie2-2.3.1-linux-x86_64.zip
-rm bowtie2-2.3.1-linux-x86_64.zip
-cd bowtie2-2.3.1
+wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.3.1/bowtie2-2.3.3.1-linux-x86_64.zip
+unzip bowtie2-2.3.3.1-linux-x86_64.zip
+rm bowtie2-2.3.3.1-linux-x86_64.zip
+cd bowtie2-2.3.3.1-linux-x86_64
 sudo cp bowtie2* /usr/local/bin
 
 #install Trinity
@@ -829,7 +829,7 @@ sed -i 's/$samtools index/samtools index/' task_smaltmap.pl
 firefox https://www.google.com/chrome/browser/desktop/index.html
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 
-#install SMRT link v4.0
+#install SMRT link v5.0.1
 # http://www.pacb.com/support/software-downloads/
 export SMRT_USER="smrtanalysis" #| tee -a "${HOME}"/.bashrc
 # source "${HOME}"/.bashrc
@@ -839,15 +839,15 @@ sudo usermod -aG sudo smrtanalysis
 #login as root
 su -l $SMRT_USER
 SMRT_USER="smrtanalysis"
-export SMRT_ROOT=$PWD/pacbio/smrtlink
-wget http://programs.pacificbiosciences.com/e/1652/lers-smrtlink-4-0-0-190159-zip/3rvmzd/507864561
-unzip 507864561 #zip password: SmrT3chN
+export SMRT_ROOT=$HOME/pacbio/smrtlink
+wget https://downloads.pacbcloud.com/public/software/installers/smrtlink_5.0.1.9585.zip
+unzip smrtlink_5.0.1.9585.zip #zip password: nX4dmaR%
 # mkdir -p /home/smrtanalysis/pacbio/data
 # mkdir -p /home/smrtanalysis/pacbio/results
-./smrtlink_4.0.0.190159.run --rootdir $SMRT_ROOT
+./smrtlink_5.0.1.9585.run --rootdir $SMRT_ROOT
 #Start the services
 $SMRT_ROOT/admin/bin/services-start
-$SMRT_ROOT/admin/bin/services-status
+$SMRT_ROOT/admin/bin/services-status # optional
 #Validate the installation
 $SMRT_ROOT/admin/bin/import-canneddata
 $SMRT_ROOT/admin/bin/run-sat-services
@@ -910,10 +910,10 @@ mpiexec -n $(nproc) Ray -o test -p test_1.fastq test_2.fastq -k 31
 
 #Install SPAdes
 cd "${HOME}"/prog
-wget http://cab.spbu.ru/files/release3.10.1/SPAdes-3.10.1.tar.gz
-tar zxvf SPAdes-3.10.1.tar.gz
-rm SPAdes-3.10.1.tar.gz
-cd SPAdes-3.10.1
+wget http://cab.spbu.ru/files/release3.11.1/SPAdes-3.11.1.tar.gz
+tar zxvf SPAdes-3.11.1.tar.gz
+rm SPAdes-3.11.1.tar.gz
+cd SPAdes-3.11.1
 sudo PREFIX=/usr/local ./spades_compile.sh
 
 #install sparsehash for ABySS
@@ -1631,6 +1631,13 @@ make -j
 echo -e "\n#nanopolish\nexport PATH=\$HOME/prog/nanopolish:\$PATH" | tee -a "${HOME}"/.bashrc
 source "${HOME}"/.bashrc
 
+#install minimap2
+cd "${HOME}"/prog
+git clone https://github.com/lh3/minimap2
+cd minimap2
+make -j
+sudo cp minimap2 /usr/local/bin
+
 #install racon
 cd "${HOME}"/prog
 git clone https://github.com/isovic/racon.git
@@ -1704,7 +1711,7 @@ sudo pip install --upgrade pip
 conda create -n sistr python=3.4.5
 source activate sistr
 pip install sistr_cmd
-source activate
+source deactivate
 
 #install SeqSero
 cd "${HOME}"/prog
@@ -2316,6 +2323,13 @@ sudo cp src/jabba /usr/local/bin
 # echo -e "\n#jabba\nexport PATH=\$HOME/prog/jabba/bin:\$PATH" | tee -a "${HOME}"/.bashrc
 # source "${HOME}"/.bashrc
 
+#install proovread
+cd "${HOME}"/prog
+git clone https://github.com/BioInf-Wuerzburg/proovread
+cd proovread
+make -j
+# echo -e "\n#proovread PATH=\$HOME/prog/proovread/bin:\$PATH" | tee -a "${HOME}"/.bashrc
+# source "${HOME}"/.bashrc
 
 #install poligraph dependencies
 #install cortex_var
@@ -2330,7 +2344,149 @@ cd "${HOME}"/prog
 cd "${HOME}"/prog
 git clone https://github.com/iqbal-lab/poligraph
 
+#install Quake (Illumina read correction)
+# Needs Boost and Jellyfish v1 to be installed first
+cd "${HOME}"/prog
+wget http://www.cbcb.umd.edu/software/quake/downloads/quake-0.3.5.tar.gz
+tar zxvf quake-0.3.5.tar.gz
+rm quake-0.3.5.tar.gz
+cd Quake/src
+sed -i 's%-I.*%-I/usr/include/boost -I.%' Makefile
+make -j
+ln -s $(which jellyfish1) jellyfish
+#Not working...
+
+#install nanocorr
+cd "${HOME}"/prog
+git clone https://github.com/jgurtowski/nanocorr
+cd nanocorr
+virtualenv nanocorr_ve
+source nanocorr_ve/bin/activate
+pip install git+https://github.com/cython/cython
+pip install numpy
+pip install h5py
+pip install git+https://github.com/jgurtowski/pbcore_python
+pip install git+https://github.com/jgurtowski/pbdagcon_python
+pip install git+https://github.com/jgurtowski/jbio
+pip install git+https://github.com/jgurtowski/jptools
+python setup.py install
+
+#install LoRDEC
+cd "${HOME}"/prog
+wget https://gite.lirmm.fr/lordec/lordec-releases/uploads/2565309db279a68b6dc50071a0a709a7/lordec-src_0.7.tar.gz
+tar zxvf lordec-src_0.7.tar.gz
+rm lordec-src_0.7.tar.gz
+cd lordec-src_0.7
+make clean all -j
+echo -e "\n#LoRDEC\nexport PATH=\$HOME/prog/lordec-src_0.7:\$PATH"  | tee -a "${HOME}"/.bashrc
+source "${HOME}"/.bashrc
+
+#install quiver
+#https://iamphioxus.org/2017/05/04/custom-installation-of-pacbios-genomicconsensus-quiver/
+conda create -n quiver python=2.7
+source activate quiver
+conda install numpy h5py
+pip install git+https://github.com/PacificBiosciences/pbcore
+cd "${HOME}"/prog
+git clone https://github.com/PacificBiosciences/pbcommand
+cd pbcommand
+sudo python setup.py install
+git clone https://github.com/PacificBiosciences/ConsensusCore
+cd ConsensusCore
+sudo python setup.py install
+#install blasr
+conda install blasr
+source deactivate
+
+#install hdf5
+cd "${HOME}"/prog
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.19/src/hdf5-1.8.19.tar.gz
+tar zxvf hdf5-1.8.19.tar.gz
+rm hdf5-1.8.19.tar.gz
+cd hdf5-1.8.19
+./configure --enable-cxx
+make -j
+sudo make install
+
+#install cmake
+cd "${HOME}"/prog
+wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
+tar zxvf cmake-3.10.0.tar.gz
+rm cmake-3.10.0.tar.gz
+cd cmake-3.10.0
+./configure
+make -j
+sudo make install
+
+#install rec2c
+cd "${HOME}"/prog
+git clone https://github.com/skvadrik/re2c.git
+cd re2c/re2c
+./autogen.sh
+./configure
+make -j
+sudo make install
+
+#install ninja
+cd "${HOME}"/prog
+git clone https://github.com/ninja-build/ninja.git
+cd ninja
+git checkout release
+./configure.py --bootstrap
+sudo cp ninja /usr/local/bin
+
+#install blasr_libcpp
+cd "${HOME}"/pro
+git clone --recursive https://github.com/PacificBiosciences/blasr_libcpp.git && cd blasr_libcpp
+# delete BAM SMRTSequence.hpp
+NOPBBAM=1 ./configure.py HDF5_INC=/home/bioinfo/prog/hdf5-1.8.19/hdf5/include \
+    HDF5_LIB=/home/bioinfo/prog/hdf5-1.8.19/hdf5/lib
+make -j all
+
+#install blasr without bam support
+cd "${HOME}"/prog
+git clone https://github.com/PacificBiosciences/blasr.git --recursive
+cd blasr
+./configure.py \
+    HDF5_INC=/home/bioinfo/prog/hdf5-1.8.19/hdf5/include \
+    HDF5_LIB=/home/bioinfo/prog/hdf5-1.8.19/hdf5/lib \
+    LIBBLASR_INC=/home/bioinfo/prog/blasr_libcpp/alignment \
+    LIBBLASR_LIB=/home/bioinfo/prog/blasr_libcpp/alignment \
+    LIBPBIHDF_INC=/home/bioinfo/prog/blasr_libcpp/hdf \
+    LIBPBIHDF_LIB=/home/bioinfo/prog/blasr_libcpp/hdf \
+    LIBPBDATA_INC=/home/bioinfo/prog/blasr_libcpp/pbdata \
+    LIBPBDATA_LIB=/home/bioinfo/prog/blasr_libcpp/pbdata
+make configure-submodule
+make -j build-submodule
+make -j blasr
+
+#install bamtools
+sudo apt-get install libjsoncpp-dev
+cd "${HOME}"/prog
+git clone https://github.com/pezmaster31/bamtools.git
+cd bamtools
+mkdir build
+cd build
+cmake ..
+make -j
+sudo make install
+
+#install Medusa
+cd "${HOME}"/prog
+git clone --recursive https://github.com/combogenomics/medusa
+cd medusa
+ant
+
+#install unicycler
+cd "${HOME}"/prog
+git clone https://github.com/rrwick/Unicycler.git
+cd Unicycler
+make -j
+
 
 
 
 #install Neptune
+
+
+
