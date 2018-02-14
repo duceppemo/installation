@@ -159,7 +159,7 @@ sudo apt-get install cvs subversion git-core mercurial
 cd "${HOME}"/prog
 git clone --recursive https://github.com/ekg/freebayes.git
 cd freebayes
-make
+make  # make -j wont work
 sudo make install
 
 #install Beagle
@@ -200,8 +200,10 @@ rm -rf __MACOSX
 mv kSNP3.021_Linux_package/kSNP3 .
 #rm -rf kSNP3.021_Linux_package
 cd kSNP3
-sed -i 's%/usr/local/bin/kSNP3%/usr/local/bin%' kSNP3
-sudo cp * /usr/local/bin
+sed -i 's%/usr/local/bin/kSNP3%/home/bioinfo/prog/kSNP3%' kSNP3
+# sudo cp * /usr/local/bin  #needs to use the included version of jellyfish
+echo -e "\n#kSNP3\nexport PATH=\$HOME/prog/kSNP3:\$PATH" | tee -a "${HOME}"/.bashrc
+source "${HOME}"/.bashrc
 #get the source to modify is needed
 cd "${HOME}"/prog
 wget http://downloads.sourceforge.net/project/ksnp/kSNP3.021_Source.zip
@@ -215,7 +217,7 @@ sed -i 's/output_0/output/' Kchooser
 sudo apt install libpar-packer-perl
 rm ../kSNP3/Kchooser
 pp -o ../kSNP3/Kchooser Kchooser
-sudo cp ../kSNP3/Kchooser /usr/local/bin
+# sudo cp ../kSNP3/Kchooser /usr/local/bin
 
 
 ############## Prokka - Start ##############
@@ -523,9 +525,9 @@ library("DESeq2")
 
 #install fastQC
 cd "${HOME}"/prog
-wget http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5.zip
-unzip fastqc_v0.11.5.zip
-rm fastqc_v0.11.5.zip
+wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
+unzip fastqc_v0.11.7.zip
+rm fastqc_v0.11.7.zip
 cd FastQC
 chmod +x fastqc
 echo -e "\n#FastQC\nexport PATH=\$HOME/prog/FastQC:\$PATH" | tee -a "${HOME}"/.bashrc
@@ -533,10 +535,10 @@ source "${HOME}"/.bashrc
 
 #install QUAST
 cd "${HOME}"/prog
-wget https://downloads.sourceforge.net/project/quast/quast-4.5.tar.gz
-tar zxvf quast-4.5.tar.gz
-rm quast-4.5.tar.gz
-cd quast-4.5
+wget https://downloads.sourceforge.net/project/quast/quast-4.6.0.tar.gz
+tar -xzf quast-4.6.0.tar.gz
+rm quast-4.6.0.tar.g
+cd quast-4.6.0
 sudo ./setup.py install_full
 # sudo ./install_full.sh
 # echo -e "\n#quast\nexport PATH=\$HOME/prog/quast-4.5/quast.py:\$PATH" | tee -a "${HOME}"/.bashrc
@@ -659,12 +661,14 @@ sudo cp jellyfish1 /usr/local/bin
 
 #install Kraken -> requires jellyfish v1
 cd "${HOME}"/prog
-wget https://ccb.jhu.edu/software/kraken/dl/kraken-0.10.5-beta.tgz
-tar zxvf kraken-0.10.5-beta.tgz
-rm kraken-0.10.5-beta.tgz
-cd kraken-0.10.5-beta
+# wget https://ccb.jhu.edu/software/kraken/dl/kraken-0.10.5-beta.tgz
+# tar zxvf kraken-0.10.5-beta.tgz
+# rm kraken-0.10.5-beta.tgz
+# cd kraken-0.10.5-beta
+git clone --recursive https://github.com/DerrickWood/kraken.git
+cd kraken
 ./install_kraken.sh $PWD
-echo -e "\n#kraken\nexport PATH=\$HOME/prog/kraken-0.10.5-beta:\$PATH" | tee -a "${HOME}"/.bashrc
+echo -e "\n#kraken\nexport PATH=\$HOME/prog/kraken:\$PATH" | tee -a "${HOME}"/.bashrc
 source "${HOME}"/.bashrc
 sed -i 's/jellyfish --version/jellyfish1 --version/' check_for_jellyfish.sh
 sed -i 's/jellyfish count/jellyfish1 count/' build_kraken_db.sh
@@ -1928,7 +1932,7 @@ wget http://bioinf.uni-greifswald.de/augustus/binaries/augustus-3.2.3.tar.gz
 tar zxvf augustus-3.2.3.tar.gz
 rm augustus-3.2.3.tar.gz
 cd augustus-3.2.3
-echo -e "\n#Augustus\nexport PATH=\$HOME/prog/augustus-3.2.3/bin:\$HOME/prog/augustus-3.2.3/scripts:\$PATH"  | tee -a "${HOME}"/.bashrc
+echo -e "\n#Augustus\nexport PATH=\$HOME/prog/augustus-3.2.3/bin:\$HOME/prog/augustus-3.2.3/scripts:\$PATH\nexport AUGUSTUS_CONFIG_PATH=\$HOME/prog/augustus-3.2.3/config"  | tee -a "${HOME}"/.bashrc
 source "${HOME}"/.bashrc
 
 #install GeneMark-ES
@@ -2483,10 +2487,128 @@ git clone https://github.com/rrwick/Unicycler.git
 cd Unicycler
 make -j
 
+#install BUSCO
+cd "${HOME}"/prog
+git clone --recursive https://gitlab.com/ezlab/busco.git
+cd busco
+sudo python setup.py install
+mkdir /media/6tb_raid10/db/busco
+cd /media/6tb_raid10/db/busco
+echo '\
+http://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/proteobacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/rhizobiales_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/betaproteobacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/gammaproteobacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/enterobacteriales_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/deltaepsilonsub_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/actinobacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/cyanobacteria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/firmicutes_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/clostridia_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/lactobacillales_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/bacillales_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/bacteroidetes_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/spirochaetes_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/tenericutes_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/microsporidia_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/dikarya_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/ascomycota_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/pezizomycotina_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/eurotiomycetes_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/sordariomyceta_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/saccharomyceta_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/saccharomycetales_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/basidiomycota_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/metazoa_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/nematoda_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/insecta_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/endopterygota_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/hymenoptera_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/diptera_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/actinopterygii_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/tetrapoda_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/aves_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/mammalia_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/euarchontoglires_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/laurasiatheria_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/embryophyta_odb9.tar.gz
+http://busco.ezlab.org/v2/datasets/protists_ensembl.tar.gz
+http://busco.ezlab.org/v2/datasets/alveolata_stramenophiles_ensembl.tar.gz' \
+> db_download_links.list
+cat db_download_links.list | xargs -n 1 -P 12 wget -q
+for i in $(ls); do tar zxf $i; done
 
+#install bash5tools
+cd "${HOME}"/prog
+git clone --recursive https://github.com/PacificBiosciences/pbh5tools.git
+cd pbh5tools
+sudo python setup.py install
 
+#install multiQC
+sudo pip install multiqc
+
+#install skewer
+https://sourceforge.net/projects/skewer/files/latest/download?source=files#
+
+#install AdapterRemoval v2
+cd "${HOME}"/prog
+git clone --recursive https://github.com/MikkelSchubert/adapterremoval.git
+cd adapterremoval
+make -j
+sudo make install
+
+#install kraken-biom
+sudo pip install kraken-biom
 
 #install Neptune
+conda config --add channels conda-forge
+conda config --add channels defaults
+conda config --add channels r
+conda config --add channels bioconda
+conda create --name neptune python=2.7 neptune
+source activate neptune
+source deactivate
 
+#install ResFinder
+#needs blast
+cd "${HOME}"/prog
+git clone https://bitbucket.org/genomicepidemiology/resfinder.git
+cd resfinder
+git clone https://bitbucket.org/genomicepidemiology/resfinder_db
+sudo cpanm Getopt::Long Bio::SeqIO Bio::SearchIO Try::Tiny::Retry
 
+#install nasp
+conda create --name nasp -c bioconda python=3 nasp
+source activate nasp
+source deactivate
 
+#install ALE
+cd "${HOME}"/prog
+git clone --recursive https://github.com/sc932/ALE
+cd ALE
+make -j
+sudo make install
+
+#installing gcc 6
+#https://gist.github.com/application2000/73fd6f4bf1be6600a2cf9f56315a2d91
+sudo apt-get update && \
+sudo apt-get install build-essential software-properties-common -y && \
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
+sudo apt-get update && \
+sudo apt-get install gcc-snapshot -y && \
+sudo apt-get update && \
+sudo apt-get install gcc-6 g++-6 -y && \
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6 && \
+# sudo apt-get install gcc-4.8 g++-4.8 -y && \
+# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8;
+
+# When completed, you must change to the gcc you want to work with by default. Type in your terminal:
+# sudo update-alternatives --config gcc
+
+# To verify if it worked. Just type in your terminal
+# gcc -v
